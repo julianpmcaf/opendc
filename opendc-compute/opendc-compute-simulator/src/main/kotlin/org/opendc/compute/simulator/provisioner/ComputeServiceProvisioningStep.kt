@@ -23,6 +23,8 @@
 package org.opendc.compute.simulator.provisioner
 
 import org.opendc.compute.service.ComputeService
+import org.opendc.compute.service.SchedulerUtils
+import org.opendc.compute.service.SchedulerUtils.SchedulingAlgorithms
 import org.opendc.compute.service.scheduler.ComputeScheduler
 import java.time.Duration
 
@@ -37,12 +39,14 @@ public class ComputeServiceProvisioningStep internal constructor(
     private val serviceDomain: String,
     private val scheduler: (ProvisioningContext) -> ComputeScheduler,
     private val schedulingQuantum: Duration,
+    private val schedulingAlgorithms: SchedulingAlgorithms
 ) : ProvisioningStep {
     override fun apply(ctx: ProvisioningContext): AutoCloseable {
         val service =
             ComputeService.builder(ctx.dispatcher, scheduler(ctx))
                 .withQuantum(schedulingQuantum)
                 .build()
+        ComputeService.withSchedulingAlgorithm(schedulingAlgorithms);
         ctx.registry.register(serviceDomain, ComputeService::class.java, service)
 
         return AutoCloseable { service.close() }

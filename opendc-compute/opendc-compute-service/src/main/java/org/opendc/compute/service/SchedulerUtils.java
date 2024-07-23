@@ -1,6 +1,5 @@
 package org.opendc.compute.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +10,7 @@ public class SchedulerUtils {
 
     public enum SchedulingAlgorithms{
         MinMin,
-        MaxMix,
+        MaxMin,
         Priority,
         EarliestDeadlineFirst,
     }
@@ -70,6 +69,10 @@ public class SchedulerUtils {
 
     }
 
+    public SchedulingAlgorithms getSchedulingAlgorithm(){
+        return SchedulingAlgorithmType;
+    }
+
     /**
      * Assign a priority to tasks, meant for
      * Earliest Deadline First Scheduling
@@ -93,7 +96,7 @@ public class SchedulerUtils {
                 MinMinSortList(list);
                 break;
             }
-            case MaxMix:
+            case MaxMin:
             {
                 AssignTaskSize(request);
                 list.add(request);

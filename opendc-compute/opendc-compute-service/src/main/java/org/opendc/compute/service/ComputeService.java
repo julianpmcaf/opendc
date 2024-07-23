@@ -120,7 +120,7 @@ public final class ComputeService implements AutoCloseable {
 
     private final List<ServiceImage> images = new ArrayList<>();
 
-    SchedulerUtils schedulerUtils = new SchedulerUtils(SchedulerUtils.SchedulingAlgorithms.MinMin);
+    private static SchedulerUtils schedulerUtils = new SchedulerUtils(SchedulerUtils.SchedulingAlgorithms.MinMin);
 
     /**
      * The registered servers for this compute service.
@@ -203,6 +203,14 @@ public final class ComputeService implements AutoCloseable {
         this.clock = dispatcher.getTimeSource();
         this.scheduler = scheduler;
         this.pacer = new Pacer(dispatcher, quantum.toMillis(), (time) -> doSchedule());
+    }
+
+    /**
+     * Set Scheduling Algorithm to be used.
+     */
+    public static void withSchedulingAlgorithm(SchedulerUtils.SchedulingAlgorithms algorithm){
+        LOGGER.warn("SETTING SCHEDULIGN ALGORITHM");
+        schedulerUtils = new SchedulerUtils(algorithm);
     }
 
     /**
@@ -318,8 +326,10 @@ public final class ComputeService implements AutoCloseable {
 
         long now = clock.millis();
         SchedulingRequest request = new SchedulingRequest(server, now);
+
         server.launchedAt = Instant.ofEpochMilli(now);
         schedulerUtils.performScheduling(request,list);
+        LOGGER.warn(schedulerUtils.getSchedulingAlgorithm() + "");
         serversPending++;
         requestSchedulingCycle();
         return request;
@@ -396,7 +406,6 @@ public final class ComputeService implements AutoCloseable {
             Host host = hv.getHost();
 
             // Remove request from queue
-            LOGGER.warn("REMOVING REQUEST");
             list.remove(0);
             serversPending--;
 
@@ -450,6 +459,8 @@ public final class ComputeService implements AutoCloseable {
         public ComputeService build() {
             return new ComputeService(dispatcher, computeScheduler, quantum);
         }
+
+
     }
 
     /**

@@ -26,6 +26,7 @@ package org.opendc.compute.simulator.provisioner
 
 import org.opendc.compute.carbon.CarbonTrace
 import org.opendc.compute.service.ComputeService
+import org.opendc.compute.service.SchedulerUtils.SchedulingAlgorithms
 import org.opendc.compute.service.scheduler.ComputeScheduler
 import org.opendc.compute.telemetry.ComputeMonitor
 import org.opendc.compute.topology.specs.HostSpec
@@ -42,8 +43,9 @@ public fun setupComputeService(
     serviceDomain: String,
     scheduler: (ProvisioningContext) -> ComputeScheduler,
     schedulingQuantum: Duration = Duration.ofMinutes(5),
+    schedulingAlgorithm: SchedulingAlgorithms = SchedulingAlgorithms.MaxMin
 ): ProvisioningStep {
-    return ComputeServiceProvisioningStep(serviceDomain, scheduler, schedulingQuantum)
+    return ComputeServiceProvisioningStep(serviceDomain, scheduler, schedulingQuantum, schedulingAlgorithm)
 }
 
 /**
