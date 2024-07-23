@@ -100,8 +100,7 @@ public final class ComputeService implements AutoCloseable {
     /**
      * The servers that should be launched by the service.
      */
-    private final Deque<SchedulingRequest> queue = new ArrayDeque<>();
-
+    private final List<SchedulingRequest> list = new ArrayList<>();
     /**
      * The active servers in the system.
      */
@@ -120,6 +119,8 @@ public final class ComputeService implements AutoCloseable {
     private final Map<UUID, ServiceImage> imageById = new HashMap<>();
 
     private final List<ServiceImage> images = new ArrayList<>();
+
+    SchedulerUtils schedulerUtils = new SchedulerUtils(SchedulerUtils.SchedulingAlgorithms.MinMin);
 
     /**
      * The registered servers for this compute service.
@@ -317,9 +318,8 @@ public final class ComputeService implements AutoCloseable {
 
         long now = clock.millis();
         SchedulingRequest request = new SchedulingRequest(server, now);
-
         server.launchedAt = Instant.ofEpochMilli(now);
-        queue.add(request);
+        schedulerUtils.performScheduling(request,list);
         serversPending++;
         requestSchedulingCycle();
         return request;
@@ -345,7 +345,7 @@ public final class ComputeService implements AutoCloseable {
      */
     private void requestSchedulingCycle() {
         // Bail out in case the queue is empty.
-        if (queue.isEmpty()) {
+        if (list.isEmpty()) {
             return;
         }
 
@@ -358,11 +358,11 @@ public final class ComputeService implements AutoCloseable {
     private void doSchedule() {
         // reorder tasks
 
-        while (!queue.isEmpty()) {
-            SchedulingRequest request = queue.peek();
+        while (!list.isEmpty()) {
+            SchedulingRequest request = list.get(0);
 
             if (request.isCancelled) {
-                queue.poll();
+                list.remove(0);
                 serversPending--;
                 continue;
             }
@@ -380,7 +380,7 @@ public final class ComputeService implements AutoCloseable {
 
                 if (flavor.getMemorySize() > maxMemory || flavor.getCoreCount() > maxCores) {
                     // Remove the incoming image
-                    queue.poll();
+                    list.remove(0);
                     serversPending--;
                     attemptsFailure++;
 
@@ -396,7 +396,8 @@ public final class ComputeService implements AutoCloseable {
             Host host = hv.getHost();
 
             // Remove request from queue
-            queue.poll();
+            LOGGER.warn("REMOVING REQUEST");
+            list.remove(0);
             serversPending--;
 
             LOGGER.info("Assigned server {} to host {}", server, host);
@@ -612,7 +613,7 @@ public final class ComputeService implements AutoCloseable {
     static class SchedulingRequest {
         final ServiceServer server;
         final long submitTime;
-
+        double urgency;
         boolean isCancelled;
 
         SchedulingRequest(ServiceServer server, long submitTime) {
