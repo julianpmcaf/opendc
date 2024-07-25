@@ -9,6 +9,7 @@ public class SchedulerUtils {
     private SchedulingAlgorithms SchedulingAlgorithmType;
 
     public enum SchedulingAlgorithms{
+        FiFo,
         MinMin,
         MaxMin,
         Priority,
@@ -38,12 +39,11 @@ public class SchedulerUtils {
      */
     public void MinMinSortList(List<ComputeService.SchedulingRequest> list){
         Collections.sort(list, Comparator.comparingDouble(e -> e.urgency));
-//        return list;
     }
 
     /**
      * Assign a priority to tasks, meant for Priority Scheduling,
-     * Min Min Sheduling, Max Min Scheduling, and
+     * MinMin Scheduling, Max Min Scheduling, and
      * Earliest Deadline First Scheduling.
      */
     public void AssignPriority(ComputeService.SchedulingRequest request){
@@ -57,7 +57,7 @@ public class SchedulerUtils {
 
     /**
      * Assign a priority to tasks, meant for
-     * Min Min Sheduling and Max Min Scheduling
+     * MinMin Scheduling and Max Min Scheduling
      */
     public void AssignTaskSize(ComputeService.SchedulingRequest request){
         final double memMultiplier = 1;
@@ -89,6 +89,11 @@ public class SchedulerUtils {
 
     public void performScheduling(ComputeService.SchedulingRequest request, List<ComputeService.SchedulingRequest> list){
         switch (SchedulingAlgorithmType){
+            case FiFo:
+            {
+                list.add(request);
+                break;
+            }
             case MinMin:
             {
                 AssignTaskSize(request);
