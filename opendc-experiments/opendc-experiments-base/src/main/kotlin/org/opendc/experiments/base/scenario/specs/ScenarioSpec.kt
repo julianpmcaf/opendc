@@ -26,8 +26,10 @@ import AllocationPolicySpec
 import CheckpointModelSpec
 import ExportModelSpec
 import ScenarioTopologySpec
+import TaskSchedulerSpec
 import WorkloadSpec
 import kotlinx.serialization.Serializable
+import org.opendc.compute.service.SchedulerUtils.SchedulingAlgorithms
 import java.util.UUID
 
 /**
@@ -56,6 +58,7 @@ public data class ScenarioSpec(
     val outputFolder: String = "output",
     val initialSeed: Int = 0,
     val runs: Int = 1,
+    var taskSchedulers: List<TaskSchedulerSpec?> = listOf(null)
 ) {
     init {
         require(runs > 0) { "The number of runs should always be positive" }

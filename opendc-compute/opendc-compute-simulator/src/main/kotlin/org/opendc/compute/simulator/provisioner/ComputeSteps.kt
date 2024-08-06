@@ -43,7 +43,7 @@ public fun setupComputeService(
     serviceDomain: String,
     scheduler: (ProvisioningContext) -> ComputeScheduler,
     schedulingQuantum: Duration = Duration.ofMinutes(5),
-    schedulingAlgorithm: SchedulingAlgorithms = SchedulingAlgorithms.FiFo
+    schedulingAlgorithm: SchedulingAlgorithms? = SchedulingAlgorithms.FiFo
 ): ProvisioningStep {
     return ComputeServiceProvisioningStep(serviceDomain, scheduler, schedulingQuantum, schedulingAlgorithm)
 }

@@ -39,7 +39,7 @@ public class ComputeServiceProvisioningStep internal constructor(
     private val serviceDomain: String,
     private val scheduler: (ProvisioningContext) -> ComputeScheduler,
     private val schedulingQuantum: Duration,
-    private val schedulingAlgorithms: SchedulingAlgorithms
+    private val schedulingAlgorithms: SchedulingAlgorithms?
 ) : ProvisioningStep {
     override fun apply(ctx: ProvisioningContext): AutoCloseable {
         val service =

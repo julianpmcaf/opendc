@@ -120,6 +120,7 @@ public fun runScenario(
                 setupComputeService(
                     serviceDomain,
                     { createComputeScheduler(scenario.allocationPolicySpec.policyType, Random(it.seeder.nextLong())) },
+                    schedulingAlgorithm = scenario.taskSchedulers?.schedulingAlgorithm
                 ),
                 setupHosts(serviceDomain, topology, optimize = true),
             )

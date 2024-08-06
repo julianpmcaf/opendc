@@ -71,23 +71,26 @@ public fun getScenarios(scenarioSpec: ScenarioSpec): List<Scenario> {
                     for (checkpointModelSpec in scenarioSpec.checkpointModels) {
                         for (carbonTracePath in scenarioSpec.carbonTracePaths) {
                             for (exportModelSpec in scenarioSpec.exportModels) {
-                                val scenario =
-                                    Scenario(
-                                        id = scenarioID,
-                                        topologySpec = scenarioTopologySpec,
-                                        workloadSpec = workloadSpec,
-                                        allocationPolicySpec = allocationPolicySpec,
-                                        failureModelSpec = failureModelSpec,
-                                        checkpointModelSpec = checkpointModelSpec,
-                                        carbonTracePath = carbonTracePath,
-                                        exportModelSpec = exportModelSpec,
-                                        outputFolder = outputFolder,
-                                        name = scenarioID.toString(),
-                                        runs = scenarioSpec.runs,
-                                        initialSeed = scenarioSpec.initialSeed,
-                                    )
-                                trackScenario(scenarioSpec, outputFolder, scenario)
-                                scenarios.add(scenario)
+                                for (taskSchedulerSpec in scenarioSpec.taskSchedulers) {
+                                    val scenario =
+                                        Scenario(
+                                            id = scenarioID,
+                                            topologySpec = scenarioTopologySpec,
+                                            workloadSpec = workloadSpec,
+                                            allocationPolicySpec = allocationPolicySpec,
+                                            failureModelSpec = failureModelSpec,
+                                            checkpointModelSpec = checkpointModelSpec,
+                                            carbonTracePath = carbonTracePath,
+                                            exportModelSpec = exportModelSpec,
+                                            outputFolder = outputFolder,
+                                            name = scenarioID.toString(),
+                                            runs = scenarioSpec.runs,
+                                            initialSeed = scenarioSpec.initialSeed,
+                                            taskSchedulers = taskSchedulerSpec
+                                        )
+                                    trackScenario(scenarioSpec, outputFolder, scenario)
+                                    scenarios.add(scenario)
+                                }
                             }
                         }
                     }

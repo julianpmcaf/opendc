@@ -370,7 +370,7 @@ public final class ComputeService implements AutoCloseable {
 
         while (!list.isEmpty()) {
             SchedulingRequest request = list.get(0);
-
+            LOGGER.warn(request.urgency + "");
             if (request.isCancelled) {
                 list.remove(0);
                 serversPending--;

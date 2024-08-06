@@ -26,7 +26,9 @@ import AllocationPolicySpec
 import CheckpointModelSpec
 import ExportModelSpec
 import ScenarioTopologySpec
+import TaskSchedulerSpec
 import WorkloadSpec
+import org.opendc.compute.service.SchedulerUtils.SchedulingAlgorithms
 import org.opendc.experiments.base.scenario.specs.FailureModelSpec
 
 /**
@@ -41,6 +43,7 @@ import org.opendc.experiments.base.scenario.specs.FailureModelSpec
  * @property name The String representing the name of the scenario. It defaults to an empty string.
  * @property runs The Int representing the number of runs of the scenario. It defaults to 1.
  * @property initialSeed The Int representing the initial seed of the scenario. It defaults to 0.
+ * @property taskScheduler The SchedulingAlgorithms represents the way task will be scheduled. It defaults to FiFo.
  */
 public data class Scenario(
     var id: Int = -1,
@@ -55,4 +58,5 @@ public data class Scenario(
     val name: String = "",
     val runs: Int = 1,
     val initialSeed: Int = 0,
+    val taskSchedulers: TaskSchedulerSpec?
 )
