@@ -3,10 +3,12 @@ package org.opendc.compute.service;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SchedulerUtils {
     private SchedulingAlgorithms SchedulingAlgorithmType;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputeService.class);
 
     public enum SchedulingAlgorithms{
         FiFo,
@@ -63,7 +65,6 @@ public class SchedulerUtils {
         final double memMultiplier = 1;
         final double cpuMultiplier = 1;
 
-        //TODO: EDIT MULTIPLIER
         request.urgency = (memMultiplier * request.server.getFlavor().getMemorySize()) +
             (cpuMultiplier * request.server.getFlavor().getCoreCount());
 
@@ -92,12 +93,14 @@ public class SchedulerUtils {
             case FiFo:
             {
                 list.add(request);
+
                 break;
             }
             case MinMin:
             {
                 AssignTaskSize(request);
                 list.add(request);
+
                 MinMinSortList(list);
                 break;
             }

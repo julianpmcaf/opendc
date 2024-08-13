@@ -1,0 +1,27 @@
+{
+    "topologies": [
+        {
+            "pathToFile": "topologies/single.json"
+        }
+    ],
+    "workloads": [
+        {
+            "pathToFile": "traces/bitbrains-small",
+            "type": "ComputeWorkload"
+        }
+    ],
+    "allocationPolicies": [
+        {
+            "policyType": "Mem"
+        }
+    ],
+
+    "taskSchedulers": [
+	{
+	    "schedulingAlgorithm": "EarliestDeadlineFirst"
+	}
+	
+    ],
+
+    "runs": 2
+}

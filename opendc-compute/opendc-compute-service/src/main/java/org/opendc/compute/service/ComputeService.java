@@ -179,7 +179,7 @@ public final class ComputeService implements AutoCloseable {
                     hv.instanceCount--;
                     hv.availableMemory += flavor.getMemorySize();
                 } else {
-                    LOGGER.error("Unknown host {}", host);
+//                    LOGGER.error("Unknown host {}", host);
                 }
 
                 // Try to reschedule if needed
@@ -209,7 +209,7 @@ public final class ComputeService implements AutoCloseable {
      * Set Scheduling Algorithm to be used.
      */
     public static void withSchedulingAlgorithm(SchedulerUtils.SchedulingAlgorithms algorithm){
-        LOGGER.warn("SETTING SCHEDULIGN ALGORITHM");
+//        LOGGER.warn("SETTING SCHEDULIGN ALGORITHM");
         schedulerUtils = new SchedulerUtils(algorithm);
     }
 
@@ -329,7 +329,6 @@ public final class ComputeService implements AutoCloseable {
 
         server.launchedAt = Instant.ofEpochMilli(now);
         schedulerUtils.performScheduling(request,list);
-        LOGGER.warn(schedulerUtils.getSchedulingAlgorithm() + "");
         serversPending++;
         requestSchedulingCycle();
         return request;
@@ -337,6 +336,7 @@ public final class ComputeService implements AutoCloseable {
 
     void delete(ServiceFlavor flavor) {
         flavorById.remove(flavor.getUid());
+
         flavors.remove(flavor);
     }
 
@@ -370,7 +370,6 @@ public final class ComputeService implements AutoCloseable {
 
         while (!list.isEmpty()) {
             SchedulingRequest request = list.get(0);
-            LOGGER.warn(request.urgency + "");
             if (request.isCancelled) {
                 list.remove(0);
                 serversPending--;
@@ -509,6 +508,9 @@ public final class ComputeService implements AutoCloseable {
 
             final ComputeService service = this.service;
             UUID uid = new UUID(service.clock.millis(), service.random.nextLong());
+            if (cpuCount == 0){
+                cpuCount = 1;
+            }
             ServiceFlavor flavor = new ServiceFlavor(service, uid, name, cpuCount, memorySize, labels, meta);
 
             service.flavorById.put(uid, flavor);
